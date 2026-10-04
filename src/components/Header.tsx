@@ -24,14 +24,24 @@ export const Header: React.FC<HeaderProps> = ({ title, subtitle, showExamConfigW
         <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-3 text-amber-900 text-xs md:text-sm flex items-start space-x-2.5">
           <ShieldAlert className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
           <div className="flex-1">
-            <span className="font-bold text-amber-800">
-              Exam Configuration Notice:
-            </span>{' '}
-            Verify this configuration against the official IBPS notification for your recruitment cycle. You can customize section questions, marks, and negative marking anytime in{' '}
-            <NavLink to="/settings" className="underline font-semibold hover:text-amber-950">
-              Settings &rarr; Exam Configuration
-            </NavLink>
-            .
+            <div className="flex flex-wrap items-center gap-2 mb-1">
+              <span className="font-bold text-amber-900">
+                Exam Configuration Notice:
+              </span>
+              <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-800 text-[10px] font-black uppercase tracking-wider">
+                Current Baseline: CRP-SPL-XVI (2026)
+              </span>
+              <span className="px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-900 text-[10px] font-black uppercase tracking-wider">
+                Target: 2027 Cycle
+              </span>
+            </div>
+            <p className="text-amber-800 text-xs leading-relaxed">
+              Based on CRP-SPL-XVI (2026) with <strong>Professional Knowledge (IT) in Prelims (50 Qs / 50 M / 30m)</strong>. Always verify against the official IBPS notification when released for 2027. Configurable anytime in{' '}
+              <NavLink to="/settings" className="underline font-semibold hover:text-amber-950">
+                Settings &rarr; Exam Configuration
+              </NavLink>
+              .
+            </p>
           </div>
         </div>
       )}

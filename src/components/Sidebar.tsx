@@ -22,6 +22,7 @@ import {
   X,
   Sparkles,
   Compass,
+  PenTool,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -35,6 +36,7 @@ const navItems = [
   { name: 'Study Log', path: '/study-log', icon: Clock },
   { name: 'IT Preparation', path: '/it-preparation', icon: Cpu },
   { name: 'Practice', path: '/practice', icon: PlayCircle },
+  { name: 'Mains Descriptive', path: '/mains-descriptive', icon: PenTool },
   { name: 'Mock Tests', path: '/mock-tests', icon: FileText, highlight: true },
   { name: 'Question Bank', path: '/question-bank', icon: Database },
   { name: 'Mistake Notebook', path: '/mistake-notebook', icon: AlertCircle },

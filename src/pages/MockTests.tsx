@@ -400,47 +400,52 @@ export const MockTests: React.FC = () => {
             </h3>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-                <div className="font-bold text-slate-900 text-sm">Professional Knowledge (IT)</div>
-                <div className="text-xs text-slate-500">60 Questions • 45 Mins</div>
+              <div className="bg-white p-4 rounded-2xl border-2 border-indigo-200 shadow-sm space-y-3 bg-indigo-50/20">
+                <div className="flex items-center justify-between">
+                  <div className="font-bold text-slate-900 text-sm">Professional Knowledge (IT)</div>
+                  <span className="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-indigo-600 text-white">
+                    Prelims
+                  </span>
+                </div>
+                <div className="text-xs text-indigo-700 font-semibold">50 Questions • 30 Mins (50 M)</div>
                 <button
-                  onClick={() => handleLaunchSectionalMock('IT', 60, 45)}
-                  className="w-full py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl"
+                  onClick={() => handleLaunchSectionalMock('IT', 50, 30)}
+                  className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow"
                 >
-                  Start IT Sectional
+                  Start IT Sectional (30m)
                 </button>
               </div>
 
               <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
                 <div className="font-bold text-slate-900 text-sm">Reasoning Ability</div>
-                <div className="text-xs text-slate-500">50 Questions • 40 Mins</div>
+                <div className="text-xs text-slate-500 font-semibold">25 Questions • 20 Mins (25 M)</div>
                 <button
-                  onClick={() => handleLaunchSectionalMock('Reasoning', 50, 40)}
+                  onClick={() => handleLaunchSectionalMock('Reasoning', 25, 20)}
                   className="w-full py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl"
                 >
-                  Start Reasoning
+                  Start Reasoning (20m)
                 </button>
               </div>
 
               <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
                 <div className="font-bold text-slate-900 text-sm">English Language</div>
-                <div className="text-xs text-slate-500">50 Questions • 40 Mins</div>
+                <div className="text-xs text-slate-500 font-semibold">25 Questions • 20 Mins (25 M)</div>
                 <button
-                  onClick={() => handleLaunchSectionalMock('English', 50, 40)}
+                  onClick={() => handleLaunchSectionalMock('English', 25, 20)}
                   className="w-full py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl"
                 >
-                  Start English
+                  Start English (20m)
                 </button>
               </div>
 
               <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
                 <div className="font-bold text-slate-900 text-sm">Quantitative Aptitude</div>
-                <div className="text-xs text-slate-500">50 Questions • 40 Mins</div>
+                <div className="text-xs text-slate-500 font-semibold">25 Questions • 20 Mins (25 M)</div>
                 <button
-                  onClick={() => handleLaunchSectionalMock('Quant', 50, 40)}
+                  onClick={() => handleLaunchSectionalMock('Quant', 25, 20)}
                   className="w-full py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl"
                 >
-                  Start Quant
+                  Start Quant (20m)
                 </button>
               </div>
             </div>
@@ -624,6 +629,67 @@ export const MockTests: React.FC = () => {
                 <span>Time Left: {timerDisplay}</span>
               </div>
             </div>
+
+            {/* Section Switcher Tabs (Prelims 4-Section & Sectional Navigation) */}
+            {(() => {
+              const cfg = configs.find((c) => c.id === activeTest.configId);
+              // Extract unique subjects in test
+              const uniqueSections = cfg?.sections || [
+                ...new Set(activeTest.questions.map((q) => q.subject)),
+              ].map((sub) => ({
+                id: `sec-${sub}`,
+                name: sub === 'IT' ? 'Professional Knowledge (IT)' : sub,
+                subject: sub as Subject,
+                timeLimitMinutes: sub === 'IT' ? 30 : 20,
+              }));
+
+              return (
+                <div className="bg-white px-3 py-2 rounded-xl border border-slate-200 shadow-sm flex flex-wrap items-center gap-2">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 pl-1">
+                    Sections:
+                  </span>
+                  {uniqueSections.map((sec) => {
+                    const firstIdxOfSection = activeTest.questions.findIndex((q) => q.subject === sec.subject);
+                    const isCurrentSec = currentQ.subject === sec.subject;
+                    const secCount = activeTest.questions.filter((q) => q.subject === sec.subject).length;
+                    const secAnswered = activeTest.questions.filter(
+                      (q) => q.subject === sec.subject && activeTest.attempts[q.id]?.selectedOptionIndex !== undefined
+                    ).length;
+
+                    return (
+                      <button
+                        key={sec.id}
+                        type="button"
+                        onClick={() => {
+                          if (firstIdxOfSection !== -1) {
+                            setCurrentIdx(firstIdxOfSection);
+                          }
+                        }}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center space-x-1.5 ${
+                          isCurrentSec
+                            ? 'bg-indigo-600 text-white shadow-sm'
+                            : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                        }`}
+                      >
+                        <span>{sec.name}</span>
+                        <span
+                          className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                            isCurrentSec ? 'bg-indigo-700 text-indigo-100' : 'bg-slate-200 text-slate-600'
+                          }`}
+                        >
+                          {secAnswered}/{secCount}
+                        </span>
+                        {sec.timeLimitMinutes && (
+                          <span className="text-[10px] opacity-75 font-normal">
+                            ({sec.timeLimitMinutes}m)
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              );
+            })()}
 
             {/* Question Box */}
             <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">

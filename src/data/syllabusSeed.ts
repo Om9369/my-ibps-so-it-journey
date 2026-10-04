@@ -608,6 +608,34 @@ export const SEED_SUBJECTS: SyllabusSubject[] = [
           },
         ],
       },
+      {
+        id: 'mod-dbms-dwh-nosql',
+        subjectId: 'sub-dbms',
+        name: 'Data Warehousing, Data Mining, NoSQL & Distributed DBs',
+        topics: [
+          {
+            id: 'top-dbms-dw-nosql',
+            moduleId: 'mod-dbms-dwh-nosql',
+            subjectId: 'sub-dbms',
+            name: 'NoSQL Databases, OLAP/OLTP & Data Mining',
+            examPriority: 4,
+            subtopics: [
+              {
+                id: 'subt-dbms-dw-1',
+                topicId: 'top-dbms-dw-nosql',
+                moduleId: 'mod-dbms-dwh-nosql',
+                subjectId: 'sub-dbms',
+                name: 'NoSQL Paradigms & CAP Theorem',
+                concepts: [
+                  makeConcept('cnc-dbms-21', 'subt-dbms-dw-1', 'top-dbms-dw-nosql', 'mod-dbms-dwh-nosql', 'sub-dbms', 'SQL vs NoSQL & CAP Theorem', 'Consistency, Availability, Partition tolerance trade-offs, Document, Key-Value, Columnar & Graph DBs', 'L2', 4, ['cnc-dbms-1']),
+                  makeConcept('cnc-dbms-22', 'subt-dbms-dw-1', 'top-dbms-dw-nosql', 'mod-dbms-dwh-nosql', 'sub-dbms', 'OLTP vs OLAP Architecture', 'Transactional workloads vs Analytical processing, Star Schema, Snowflake Schema, ETL processes', 'L2', 4, ['cnc-dbms-21']),
+                  makeConcept('cnc-dbms-23', 'subt-dbms-dw-1', 'top-dbms-dw-nosql', 'mod-dbms-dwh-nosql', 'sub-dbms', 'Data Mining Techniques & Warehousing', 'Association rules (Apriori), classification, clustering, data slicing/dicing/drilling', 'L2', 3, ['cnc-dbms-22']),
+                ],
+              },
+            ],
+          },
+        ],
+      },
     ],
   },
 
@@ -1210,9 +1238,37 @@ export const SEED_SUBJECTS: SyllabusSubject[] = [
     iconName: 'Zap',
     modules: [
       {
+        id: 'mod-et-web-tech',
+        subjectId: 'sub-emerging',
+        name: 'Web Technologies & Client-Server Protocols',
+        topics: [
+          {
+            id: 'top-et-web-arch',
+            moduleId: 'mod-et-web-tech',
+            subjectId: 'sub-emerging',
+            name: 'Internet Architecture, HTTP/S, HTML, CSS & APIs',
+            examPriority: 4,
+            subtopics: [
+              {
+                id: 'subt-et-web-1',
+                topicId: 'top-et-web-arch',
+                moduleId: 'mod-et-web-tech',
+                subjectId: 'sub-emerging',
+                name: 'Web Protocol Stack & Client-Server',
+                concepts: [
+                  makeConcept('cnc-et-web-1', 'subt-et-web-1', 'top-et-web-arch', 'mod-et-web-tech', 'sub-emerging', 'Internet, WWW, Web Servers & Browsers', 'Client-server architecture, DNS resolution, forward vs reverse proxies (Nginx/Apache)', 'L1', 3, []),
+                  makeConcept('cnc-et-web-2', 'subt-et-web-1', 'top-et-web-arch', 'mod-et-web-tech', 'sub-emerging', 'HTTP/HTTPS, Cookies, Sessions & State', 'Stateless HTTP, request/response headers, cookie attributes (HttpOnly, Secure, SameSite), session tokens', 'L2', 4, ['cnc-et-web-1']),
+                  makeConcept('cnc-et-web-3', 'subt-et-web-1', 'top-et-web-arch', 'mod-et-web-tech', 'sub-emerging', 'REST APIs, JSON, XML & Web Services', 'RESTful architectural constraints (stateless, cacheable), JSON vs XML schema, status codes (2xx, 4xx, 5xx)', 'L2', 4, ['cnc-et-web-2']),
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
         id: 'mod-et-cloud-ai',
         subjectId: 'sub-emerging',
-        name: 'Cloud Computing, AI/ML & Blockchain',
+        name: 'Cloud Computing, Virtualization & Containers',
         topics: [
           {
             id: 'top-et-cloud',
@@ -1230,6 +1286,7 @@ export const SEED_SUBJECTS: SyllabusSubject[] = [
                 concepts: [
                   makeConcept('cnc-et-1', 'subt-et-c1', 'top-et-cloud', 'mod-et-cloud-ai', 'sub-emerging', 'Cloud Service Models (IaaS, PaaS, SaaS)', 'Shared responsibility model, public, private, hybrid, community clouds', 'L1', 4, []),
                   makeConcept('cnc-et-2', 'subt-et-c1', 'top-et-cloud', 'mod-et-cloud-ai', 'sub-emerging', 'Virtualization (Hypervisors) & Containers (Docker)', 'Type-1 bare-metal vs Type-2 hosted hypervisors, OS-level virtualization', 'L2', 4, ['cnc-et-1']),
+                  makeConcept('cnc-et-cloud-sec', 'subt-et-c1', 'top-et-cloud', 'mod-et-cloud-ai', 'sub-emerging', 'Cloud Storage & Distributed Security', 'Object storage vs block storage, encryption at rest/transit, IAM roles', 'L2', 4, ['cnc-et-1']),
                 ],
               },
             ],
@@ -1238,7 +1295,7 @@ export const SEED_SUBJECTS: SyllabusSubject[] = [
             id: 'top-et-ai-blockchain',
             moduleId: 'mod-et-cloud-ai',
             subjectId: 'sub-emerging',
-            name: 'AI, Machine Learning, IoT & Blockchain',
+            name: 'AI, Machine Learning, IoT, Blockchain & RPA',
             examPriority: 4,
             subtopics: [
               {
@@ -1248,8 +1305,9 @@ export const SEED_SUBJECTS: SyllabusSubject[] = [
                 subjectId: 'sub-emerging',
                 name: 'AI/ML in Banking & Distributed Ledgers',
                 concepts: [
-                  makeConcept('cnc-et-3', 'subt-et-ai-1', 'top-et-ai-blockchain', 'mod-et-cloud-ai', 'sub-emerging', 'AI & Machine Learning Fundamentals in Banking', 'Supervised vs unsupervised models, fraud detection, credit risk scoring, chatbots', 'L1', 4, []),
+                  makeConcept('cnc-et-3', 'subt-et-ai-1', 'top-et-ai-blockchain', 'mod-et-cloud-ai', 'sub-emerging', 'AI, Machine Learning & Generative AI in Banking', 'Supervised vs unsupervised models, LLMs, fraud detection, credit risk scoring, conversational banking', 'L1', 4, []),
                   makeConcept('cnc-et-4', 'subt-et-ai-1', 'top-et-ai-blockchain', 'mod-et-cloud-ai', 'sub-emerging', 'Blockchain, Smart Contracts & Distributed Ledgers', 'Proof of Work vs Proof of Stake, immutable transaction ledgers, trade finance use cases', 'L2', 4, ['cnc-et-3']),
+                  makeConcept('cnc-et-rpa-iot', 'subt-et-ai-1', 'top-et-ai-blockchain', 'mod-et-cloud-ai', 'sub-emerging', 'Robotic Process Automation (RPA), IoT & Enterprise IT', 'Rules-based workflow automation, IoT edge sensors, biometrics in banking kiosks, enterprise service bus', 'L1', 3, ['cnc-et-3']),
                 ],
               },
             ],

@@ -13,9 +13,12 @@ import {
   PieChart as PieIcon,
   ShieldCheck,
   Compass,
+  PenTool,
 } from 'lucide-react';
 import { getOverallSyllabusMetrics } from '../services/syllabusEngine';
 import { SubjectAnalyticsSummary } from '../types/syllabus';
+import { getAllItems } from '../services/db';
+import { DescriptiveSubmission } from '../types';
 import {
   LineChart,
   Line,
@@ -33,20 +36,31 @@ export const MyGrowth: React.FC = () => {
   const [data, setData] = useState<GrowthAnalyticsData | null>(null);
   const [subjectSummaries, setSubjectSummaries] = useState<SubjectAnalyticsSummary[]>([]);
   const [syllabusMasteryPct, setSyllabusMasteryPct] = useState<number>(0);
+  const [descriptiveCount, setDescriptiveCount] = useState<number>(0);
+  const [descriptiveAvgScore, setDescriptiveAvgScore] = useState<number>(0);
 
   useEffect(() => {
     loadAnalytics();
   }, []);
 
   const loadAnalytics = async () => {
-    const [analytics, sylMetrics] = await Promise.all([
+    const [analytics, sylMetrics, descSubs] = await Promise.all([
       computeGrowthAnalytics(),
       getOverallSyllabusMetrics().catch(() => null),
+      getAllItems<DescriptiveSubmission>('descriptiveSubmissions').catch(() => []),
     ]);
     setData(analytics);
     if (sylMetrics) {
       setSubjectSummaries(sylMetrics.subjectSummaries);
       setSyllabusMasteryPct(sylMetrics.overallMasteryPct);
+    }
+    if (descSubs && descSubs.length > 0) {
+      setDescriptiveCount(descSubs.length);
+      const evaluated = descSubs.filter((d) => d.status === 'Evaluated' && d.selfScore !== undefined);
+      if (evaluated.length > 0) {
+        const sum = evaluated.reduce((acc, d) => acc + (d.selfScore || 0), 0);
+        setDescriptiveAvgScore(Math.round((sum / evaluated.length) * 10) / 10);
+      }
     }
   };
 
@@ -64,11 +78,11 @@ export const MyGrowth: React.FC = () => {
       />
 
       {/* High-Level Benchmark Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
         <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
           <div className="text-xs font-semibold text-slate-500">Mocks Completed</div>
           <div className="text-2xl font-black text-indigo-600 mt-1">{data.totalMocksCompleted}</div>
-          <div className="text-[11px] text-slate-400 mt-0.5">Strict timed tests</div>
+          <div className="text-[11px] text-slate-400 mt-0.5">Prelims & Sectionals</div>
         </div>
 
         <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
@@ -93,6 +107,14 @@ export const MyGrowth: React.FC = () => {
             {data.timeManagement.avgTimePerQuestionSeconds}s
           </div>
           <div className="text-[11px] text-slate-400 mt-0.5">Target: 45s / question</div>
+        </div>
+
+        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm col-span-2 sm:col-span-1">
+          <div className="text-xs font-semibold text-slate-500">Mains Descriptive</div>
+          <div className="text-2xl font-black text-purple-600 mt-1">{descriptiveCount}</div>
+          <div className="text-[11px] text-slate-400 mt-0.5">
+            {descriptiveAvgScore > 0 ? `Avg: ${descriptiveAvgScore}/20 Marks` : 'Self-evaluated essays'}
+          </div>
         </div>
       </div>
 

@@ -170,7 +170,7 @@ export const Settings: React.FC = () => {
 
         {editingConfig && (
           <form onSubmit={handleSaveConfig} className="space-y-5 text-xs">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
               <div className="sm:col-span-2">
                 <label className="block font-bold text-slate-700 mb-1">Pattern Name</label>
                 <input
@@ -180,6 +180,32 @@ export const Settings: React.FC = () => {
                   className="w-full p-2.5 rounded-xl border border-slate-200"
                 />
               </div>
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Cycle / Notification</label>
+                <input
+                  type="text"
+                  value={editingConfig.cycle || 'CRP-SPL-XVI (2026)'}
+                  onChange={(e) => setEditingConfig({ ...editingConfig, cycle: e.target.value })}
+                  className="w-full p-2.5 rounded-xl border border-slate-200"
+                  placeholder="e.g. CRP-SPL-XVI (2026) or 2027"
+                />
+              </div>
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">Stage</label>
+                <select
+                  value={editingConfig.stage || 'Prelims'}
+                  onChange={(e) => setEditingConfig({ ...editingConfig, stage: e.target.value as any })}
+                  className="w-full p-2.5 rounded-xl border border-slate-200 bg-white"
+                >
+                  <option value="Prelims">Prelims</option>
+                  <option value="Mains Objective">Mains Objective</option>
+                  <option value="Mains Descriptive">Mains Descriptive</option>
+                  <option value="Combined">Combined</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block font-bold text-slate-700 mb-1">Total Time (Minutes)</label>
                 <input
@@ -191,21 +217,20 @@ export const Settings: React.FC = () => {
                   className="w-full p-2.5 rounded-xl border border-slate-200"
                 />
               </div>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                id="negEnabled"
-                checked={editingConfig.negativeMarkingEnabled}
-                onChange={(e) =>
-                  setEditingConfig({ ...editingConfig, negativeMarkingEnabled: e.target.checked })
-                }
-                className="w-4 h-4 rounded text-indigo-600"
-              />
-              <label htmlFor="negEnabled" className="font-semibold text-slate-700 cursor-pointer">
-                Enable Negative Marking Penalty (e.g. 0.25 marks deducted for wrong answer)
-              </label>
+              <div className="flex items-center pt-6">
+                <label className="flex items-center space-x-2 cursor-pointer font-semibold text-slate-700">
+                  <input
+                    type="checkbox"
+                    id="negEnabled"
+                    checked={editingConfig.negativeMarkingEnabled}
+                    onChange={(e) =>
+                      setEditingConfig({ ...editingConfig, negativeMarkingEnabled: e.target.checked })
+                    }
+                    className="w-4 h-4 rounded text-indigo-600"
+                  />
+                  <span>Enable Negative Marking Penalty (e.g. 0.25 marks deducted)</span>
+                </label>
+              </div>
             </div>
 
             {/* Sections List */}
@@ -226,7 +251,7 @@ export const Settings: React.FC = () => {
                 {editingConfig.sections.map((sec, idx) => (
                   <div
                     key={sec.id || idx}
-                    className="p-4 bg-slate-50 rounded-xl border border-slate-200 grid grid-cols-1 sm:grid-cols-6 gap-3 items-end"
+                    className="p-4 bg-slate-50 rounded-xl border border-slate-200 grid grid-cols-1 sm:grid-cols-7 gap-2.5 items-end"
                   >
                     <div className="sm:col-span-2">
                       <label className="block text-[11px] font-bold text-slate-600 mb-1">Section Name</label>
@@ -236,6 +261,21 @@ export const Settings: React.FC = () => {
                         onChange={(e) => handleUpdateSection(idx, 'name', e.target.value)}
                         className="w-full p-2 rounded-lg border border-slate-200 bg-white"
                       />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-600 mb-1">Subject</label>
+                      <select
+                        value={sec.subject}
+                        onChange={(e) => handleUpdateSection(idx, 'subject', e.target.value)}
+                        className="w-full p-2 rounded-lg border border-slate-200 bg-white text-xs"
+                      >
+                        <option value="IT">IT</option>
+                        <option value="Reasoning">Reasoning</option>
+                        <option value="English">English</option>
+                        <option value="Quant">Quant</option>
+                        <option value="Banking & CA">Banking & CA</option>
+                      </select>
                     </div>
 
                     <div>
@@ -249,7 +289,17 @@ export const Settings: React.FC = () => {
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-bold text-slate-600 mb-1">Marks (+ / Q)</label>
+                      <label className="block text-[11px] font-bold text-slate-600 mb-1">Time (Mins)</label>
+                      <input
+                        type="number"
+                        value={sec.timeLimitMinutes || 20}
+                        onChange={(e) => handleUpdateSection(idx, 'timeLimitMinutes', Number(e.target.value))}
+                        className="w-full p-2 rounded-lg border border-slate-200 bg-white"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-600 mb-1">Marks (+/Q)</label>
                       <input
                         type="number"
                         step="0.05"
@@ -259,23 +309,22 @@ export const Settings: React.FC = () => {
                       />
                     </div>
 
-                    <div>
-                      <label className="block text-[11px] font-bold text-slate-600 mb-1">Penalty (- / Q)</label>
-                      <input
-                        type="number"
-                        step="0.05"
-                        value={sec.negativeMarks}
-                        onChange={(e) => handleUpdateSection(idx, 'negativeMarks', Number(e.target.value))}
-                        className="w-full p-2 rounded-lg border border-slate-200 bg-white"
-                      />
-                    </div>
-
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1">
+                      <div className="flex-1">
+                        <label className="block text-[11px] font-bold text-slate-600 mb-1">Penalty</label>
+                        <input
+                          type="number"
+                          step="0.05"
+                          value={sec.negativeMarks}
+                          onChange={(e) => handleUpdateSection(idx, 'negativeMarks', Number(e.target.value))}
+                          className="w-full p-2 rounded-lg border border-slate-200 bg-white"
+                        />
+                      </div>
                       <button
                         type="button"
                         onClick={() => handleRemoveSection(idx)}
                         disabled={editingConfig.sections.length <= 1}
-                        className="p-2 text-slate-400 hover:text-rose-600 disabled:opacity-30"
+                        className="p-2 text-slate-400 hover:text-rose-600 disabled:opacity-30 mt-4"
                         title="Remove Section"
                       >
                         <Trash2 className="w-4 h-4" />

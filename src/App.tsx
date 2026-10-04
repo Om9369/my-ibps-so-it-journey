@@ -9,6 +9,7 @@ import DailyAnalysis from './pages/DailyAnalysis';
 import ITPreparation from './pages/ITPreparation';
 import Syllabus from './pages/Syllabus';
 import Practice from './pages/Practice';
+import MainsDescriptive from './pages/MainsDescriptive';
 import MockTests from './pages/MockTests';
 import QuestionBank from './pages/QuestionBank';
 import MistakeNotebook from './pages/MistakeNotebook';
@@ -47,6 +48,7 @@ const App: React.FC = () => {
             <Route path="/it-preparation" element={<ITPreparation />} />
             <Route path="/syllabus" element={<Syllabus />} />
             <Route path="/practice" element={<Practice />} />
+            <Route path="/mains-descriptive" element={<MainsDescriptive />} />
             <Route path="/mock-tests" element={<MockTests />} />
             <Route path="/question-bank" element={<QuestionBank />} />
             <Route path="/mistake-notebook" element={<MistakeNotebook />} />

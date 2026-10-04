@@ -332,14 +332,31 @@ export const Practice: React.FC = () => {
                 </div>
               </div>
 
-              {/* Action Button */}
-              <button
-                onClick={handleStartQuickPractice}
-                className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-sm rounded-xl flex items-center justify-center space-x-2 shadow-lg shadow-indigo-600/20 transition-all"
-              >
-                <PlayCircle className="w-5 h-5" />
-                <span>Launch Quick Practice Set</span>
-              </button>
+              {/* Action Buttons */}
+              <div className="space-y-2">
+                <button
+                  onClick={handleStartQuickPractice}
+                  className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-sm rounded-xl flex items-center justify-center space-x-2 shadow-lg shadow-indigo-600/20 transition-all"
+                >
+                  <PlayCircle className="w-5 h-5" />
+                  <span>Launch Quick Practice Set</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleStartPresetQuiz('Targeted Practice: My Weakest Topics', {
+                      count: questionCount,
+                      timeMins: Math.round(questionCount * 1.5),
+                      weakTopicsOnly: true,
+                    })
+                  }
+                  className="w-full py-3 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold text-xs rounded-xl flex items-center justify-center space-x-2 transition-all shadow-sm"
+                >
+                  <Sparkles className="w-4 h-4 text-amber-600" />
+                  <span>Practice My Weakest Topics (Auto-Filtered)</span>
+                </button>
+              </div>
             </div>
           ) : (
             /* QUIZ MODE PRESETS (Requirement #10) */
@@ -482,6 +499,35 @@ export const Practice: React.FC = () => {
                       className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow"
                     >
                       Start Quiz
+                    </button>
+                  </div>
+                </div>
+
+                {/* Prelims IT 30-Min / 50-Q Speed Simulation (CRP-SPL-XVI Pattern) */}
+                <div className="bg-white p-5 rounded-2xl border-2 border-indigo-200 shadow-sm space-y-3 flex flex-col justify-between hover:border-indigo-400 transition-all bg-indigo-50/20">
+                  <div className="space-y-2">
+                    <div className="w-9 h-9 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold">
+                      <Zap className="w-5 h-5 text-indigo-600" />
+                    </div>
+                    <div className="flex items-center space-x-1.5">
+                      <h4 className="font-bold text-slate-900 text-sm">Prelims IT — 30 Min / 50 Qs</h4>
+                      <span className="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-indigo-600 text-white">
+                        CRP-SPL-XVI
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-500">
+                      Exact simulation of the Prelims Professional Knowledge section: 50 Questions, 50 Marks, 30 Minutes under strict exam timing.
+                    </p>
+                  </div>
+                  <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+                    <span className="text-xs font-bold text-indigo-700">50 Qs • 30 Mins (0.25 Neg)</span>
+                    <button
+                      onClick={() =>
+                        handleStartPresetQuiz('Prelims IT — 30 Min / 50 Question Drill', { count: 50, timeMins: 30 })
+                      }
+                      className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow"
+                    >
+                      Start Drill &rarr;
                     </button>
                   </div>
                 </div>

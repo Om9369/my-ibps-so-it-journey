@@ -262,7 +262,29 @@ export const Syllabus: React.FC = () => {
       <Header
         title="IBPS SO IT Syllabus Engine"
         subtitle="Adaptive, hierarchical intelligence layer: 15 Major Subjects, Mastery tracking, Prerequisites, and August 2027 Roadmaps."
+        showExamConfigWarning={true}
       />
+
+      {/* Official Exam Pattern vs Recommended Syllabus Distinction Notice (Requirement #44) */}
+      <div className="bg-slate-900 text-slate-200 rounded-2xl p-4 sm:p-5 border border-slate-800 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold text-[10px] uppercase tracking-wider border border-emerald-500/30">
+              Official Exam Structure
+            </span>
+            <span className="text-xs font-bold text-white">
+              CRP-SPL-XVI (2026 Baseline) &rarr; Prelims (125 Qs / 125 M / 90m) with Professional Knowledge
+            </span>
+          </div>
+          <p className="text-xs text-slate-400 max-w-3xl leading-relaxed">
+            <strong>Important Exam-Data Distinction:</strong> IBPS specifies the official examination structure (sectional questions, marks, and durations) and the broad Professional Knowledge domain. The comprehensive 15-subject hierarchy below represents the <strong>RECOMMENDED PREPARATION SYLLABUS</strong> curated to ensure thorough readiness for all direct, conceptual, and banking-IT scenarios.
+          </p>
+        </div>
+        <div className="text-right shrink-0">
+          <span className="text-[11px] font-semibold text-indigo-400 block">Exam Target</span>
+          <span className="text-sm font-black text-white">Aug 2027 Cycle</span>
+        </div>
+      </div>
 
       {/* Top High-Level Metrics Cockpit */}
       {overallMetrics && (

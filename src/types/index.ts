@@ -79,6 +79,9 @@ export interface MistakeEntry {
   notes?: string;
 }
 
+export type ExamStage = 'Prelims' | 'Mains Objective' | 'Mains Descriptive' | 'Combined';
+export type QuestionFormat = 'Objective' | 'Descriptive';
+
 export interface ExamSectionConfig {
   id: string;
   name: string;
@@ -88,16 +91,41 @@ export interface ExamSectionConfig {
   marksPerCorrect: number;
   negativeMarks: number;
   timeLimitMinutes?: number;
+  format?: QuestionFormat; // Objective vs Descriptive
+  wordLimit?: number; // for descriptive
 }
 
 export interface ExamConfig {
   id: string;
   name: string;
+  cycle?: string; // e.g. "CRP-SPL-XVI (2026)" or "2027 Cycle"
+  stage: ExamStage; // Prelims vs Mains
   description: string;
   isVerified: boolean;
   totalTimeMinutes: number;
   sections: ExamSectionConfig[];
   negativeMarkingEnabled: boolean;
+  isOfficialBaseline?: boolean;
+}
+
+export interface DescriptiveSubmission {
+  id: string;
+  questionId: string;
+  questionText: string;
+  subject: Subject;
+  topic: string;
+  conceptId?: string;
+  userAnswer: string;
+  wordCount: number;
+  targetWordCount: number;
+  timeSpentSeconds: number;
+  submittedAt: string;
+  selfScore?: number; // 0-10 or 0-20
+  maxScore: number;
+  selfEvaluationFeedback?: string;
+  modelAnswer: string;
+  weakTopicsTagged: string[];
+  status: 'Draft' | 'Submitted' | 'Evaluated';
 }
 
 export interface MockQuestionAttempt {

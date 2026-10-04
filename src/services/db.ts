@@ -18,7 +18,7 @@ import {
 } from '../types';
 
 const DB_NAME = 'MyIBPSSOITJourneyDB';
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 
 let dbPromise: Promise<IDBPDatabase<any>> | null = null;
 
@@ -71,6 +71,9 @@ export async function getDB(): Promise<IDBPDatabase<any>> {
         if (!db.objectStoreNames.contains('syllabusState')) {
           db.createObjectStore('syllabusState', { keyPath: 'id' });
         }
+        if (!db.objectStoreNames.contains('descriptiveSubmissions')) {
+          db.createObjectStore('descriptiveSubmissions', { keyPath: 'id' });
+        }
       },
     });
   }
@@ -109,15 +112,15 @@ export async function initAppDatabase(): Promise<void> {
       await tx.done;
     }
 
-    // Seed exam configurations
-    const configCount = await db.count('examConfigs');
-    if (configCount === 0) {
-      const tx = db.transaction('examConfigs', 'readwrite');
-      for (const c of defaultExamConfigs) {
-        await tx.store.put(c);
+    // Seed or update official exam configurations
+    const txCfg = db.transaction('examConfigs', 'readwrite');
+    for (const c of defaultExamConfigs) {
+      const existing = await txCfg.store.get(c.id);
+      if (!existing) {
+        await txCfg.store.put(c);
       }
-      await tx.done;
     }
+    await txCfg.done;
 
     // Seed IT progress
     const itCount = await db.count('itProgress');
@@ -346,6 +349,7 @@ export async function exportAllDataAsJSON(): Promise<string> {
     goals,
     masteryRecords,
     conceptProgress,
+    descriptiveSubmissions,
   ] = await Promise.all([
     getAllItems<Question>('questions'),
     getAllItems<MockTestAttempt>('mockTests'),
@@ -361,10 +365,11 @@ export async function exportAllDataAsJSON(): Promise<string> {
     getAllItems<PrepGoal>('goals'),
     getAllItems<any>('masteryRecords'),
     getAllItems<any>('conceptProgress'),
+    getAllItems<any>('descriptiveSubmissions'),
   ]);
 
   const backupData = {
-    version: '2.0',
+    version: '3.0',
     exportDate: new Date().toISOString(),
     appName: 'My IBPS SO IT Journey',
     data: {
@@ -382,6 +387,7 @@ export async function exportAllDataAsJSON(): Promise<string> {
       goals,
       masteryRecords,
       conceptProgress,
+      descriptiveSubmissions,
     },
   };
 
@@ -412,6 +418,7 @@ export async function restoreAllDataFromJSON(jsonString: string): Promise<{ succ
       'goals',
       'masteryRecords',
       'conceptProgress',
+      'descriptiveSubmissions',
     ];
 
     let totalRestored = 0;

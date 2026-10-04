@@ -112,10 +112,23 @@ export async function generateTest(options: GenerateMockOptions): Promise<MockTe
     // Select questions per section according to ExamConfig
     for (const section of options.config.sections) {
       let pool = allQuestions.filter((q) => q.subject === section.subject);
+      if (pool.length === 0) {
+        pool = allQuestions; // fallback if no specific subject questions exist
+      }
       if (options.randomize !== false) {
         pool = shuffleArray(pool);
       }
-      const sectionQuestions = pool.slice(0, section.questionCount);
+      let sectionQuestions: Question[] = [];
+      while (sectionQuestions.length < section.questionCount && pool.length > 0) {
+        for (const item of pool) {
+          if (sectionQuestions.length >= section.questionCount) break;
+          // clone with unique index ID if we need to repeat items to satisfy full 125/50 simulation length
+          sectionQuestions.push({
+            ...item,
+            id: sectionQuestions.length === 0 ? item.id : `${item.id}-${sectionQuestions.length}`,
+          });
+        }
+      }
       selectedQuestions.push(...sectionQuestions);
     }
   } else {
@@ -143,10 +156,20 @@ export async function generateTest(options: GenerateMockOptions): Promise<MockTe
     }
 
     const count = options.questionCount || Math.min(pool.length, 20);
-    selectedQuestions = pool.slice(0, count);
+    let picked: Question[] = [];
+    while (picked.length < count && pool.length > 0) {
+      for (const item of pool) {
+        if (picked.length >= count) break;
+        picked.push({
+          ...item,
+          id: picked.length === 0 ? item.id : `${item.id}-${picked.length}`,
+        });
+      }
+    }
+    selectedQuestions = picked;
   }
 
-  // If question bank is smaller than desired count, duplicate or keep available
+  // If question bank is empty, fallback safe guard
   if (selectedQuestions.length === 0 && allQuestions.length > 0) {
     selectedQuestions = allQuestions.slice(0, options.questionCount || 10);
   }
