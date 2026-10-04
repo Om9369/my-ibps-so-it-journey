@@ -14,13 +14,14 @@ interface LogMistakeModalProps {
 }
 
 const REASONS: MistakeReason[] = [
+  'Conceptual Gap',
+  'Silly / Misread Question',
+  'Calculation Mistake',
+  'Time-Pressure Rush',
+  'Formula Forgotten',
   'Concept gap',
   'Forgot information',
   'Careless mistake',
-  'Misread question',
-  'Calculation error',
-  'Time pressure',
-  'Guesswork',
 ];
 
 export const LogMistakeModal: React.FC<LogMistakeModalProps> = ({

@@ -48,6 +48,11 @@ export interface Question {
 }
 
 export type MistakeReason =
+  | 'Conceptual Gap'
+  | 'Silly / Misread Question'
+  | 'Calculation Mistake'
+  | 'Time-Pressure Rush'
+  | 'Formula Forgotten'
   | 'Concept gap'
   | 'Forgot information'
   | 'Careless mistake'

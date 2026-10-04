@@ -18,7 +18,7 @@ import {
 } from '../types';
 
 const DB_NAME = 'MyIBPSSOITJourneyDB';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 let dbPromise: Promise<IDBPDatabase<any>> | null = null;
 
@@ -61,6 +61,15 @@ export async function getDB(): Promise<IDBPDatabase<any>> {
         }
         if (!db.objectStoreNames.contains('goals')) {
           db.createObjectStore('goals', { keyPath: 'id' });
+        }
+        if (!db.objectStoreNames.contains('masteryRecords')) {
+          db.createObjectStore('masteryRecords', { keyPath: 'conceptId' });
+        }
+        if (!db.objectStoreNames.contains('conceptProgress')) {
+          db.createObjectStore('conceptProgress', { keyPath: 'conceptId' });
+        }
+        if (!db.objectStoreNames.contains('syllabusState')) {
+          db.createObjectStore('syllabusState', { keyPath: 'id' });
         }
       },
     });
@@ -158,6 +167,14 @@ export async function initAppDatabase(): Promise<void> {
         await tx.store.put(ca);
       }
       await tx.done;
+    }
+
+    // Initialize/Sync Mastery Records for the 15-subject syllabus hierarchy
+    try {
+      const { syncMasteryRecords } = await import('./syllabusEngine');
+      await syncMasteryRecords();
+    } catch (e) {
+      console.warn('Mastery records sync error:', e);
     }
   } catch (err) {
     console.warn('IndexedDB initialization failed, falling back to localStorage:', err);
@@ -327,6 +344,8 @@ export async function exportAllDataAsJSON(): Promise<string> {
     currentAffairs,
     vocabulary,
     goals,
+    masteryRecords,
+    conceptProgress,
   ] = await Promise.all([
     getAllItems<Question>('questions'),
     getAllItems<MockTestAttempt>('mockTests'),
@@ -340,10 +359,12 @@ export async function exportAllDataAsJSON(): Promise<string> {
     getAllItems<CurrentAffairItem>('currentAffairs'),
     getAllItems<VocabularyWord>('vocabulary'),
     getAllItems<PrepGoal>('goals'),
+    getAllItems<any>('masteryRecords'),
+    getAllItems<any>('conceptProgress'),
   ]);
 
   const backupData = {
-    version: '1.0',
+    version: '2.0',
     exportDate: new Date().toISOString(),
     appName: 'My IBPS SO IT Journey',
     data: {
@@ -359,6 +380,8 @@ export async function exportAllDataAsJSON(): Promise<string> {
       currentAffairs,
       vocabulary,
       goals,
+      masteryRecords,
+      conceptProgress,
     },
   };
 
@@ -387,6 +410,8 @@ export async function restoreAllDataFromJSON(jsonString: string): Promise<{ succ
       'currentAffairs',
       'vocabulary',
       'goals',
+      'masteryRecords',
+      'conceptProgress',
     ];
 
     let totalRestored = 0;

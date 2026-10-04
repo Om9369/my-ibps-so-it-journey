@@ -220,6 +220,29 @@ export const MockTests: React.FC = () => {
     const evaluated = calculateMockResults(activeTest, cfg);
     await mockProvider.saveMockAttempt(evaluated);
 
+    // Sync question performance to Syllabus Engine
+    try {
+      const { getFlatConcepts, recordConceptAttempt } = await import('../services/syllabusEngine');
+      const concepts = Array.from(getFlatConcepts().values());
+      for (const q of evaluated.questions) {
+        const attempt = evaluated.attempts[q.id];
+        if (attempt && attempt.selectedOptionIndex !== undefined) {
+          const isCorrect = attempt.isCorrect || false;
+          const matched = concepts.find(
+            (c) =>
+              c.title.toLowerCase() === q.topic.toLowerCase() ||
+              q.topic.toLowerCase().includes(c.title.toLowerCase()) ||
+              c.title.toLowerCase().includes(q.topic.toLowerCase())
+          );
+          if (matched) {
+            await recordConceptAttempt(matched.id, isCorrect, q.difficulty);
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('Error recording mock syllabus attempts:', e);
+    }
+
     setActiveTest(evaluated);
     clearActiveMockDraft();
     setScreen('Results');

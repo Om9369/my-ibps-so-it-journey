@@ -18,8 +18,10 @@ export const CurrentAffairs: React.FC = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [search, setSearch] = useState('');
   const [selectedCat, setSelectedCat] = useState<string>('All');
+  const [timeHorizon, setTimeHorizon] = useState<'All' | 'Daily' | 'Weekly' | 'Monthly'>('All');
 
   // Form State
+  const [customDate, setCustomDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [headline, setHeadline] = useState('');
   const [category, setCategory] = useState<(typeof CATEGORIES)[number]>('IT in Banking');
   const [summary, setSummary] = useState('');
@@ -41,7 +43,7 @@ export const CurrentAffairs: React.FC = () => {
 
     const item: CurrentAffairItem = {
       id: `ca-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-      date: new Date().toISOString().split('T')[0],
+      date: customDate || new Date().toISOString().split('T')[0],
       category,
       headline: headline.trim(),
       summary,
@@ -64,6 +66,21 @@ export const CurrentAffairs: React.FC = () => {
 
   const filtered = items.filter((i) => {
     if (selectedCat !== 'All' && i.category !== selectedCat) return false;
+
+    if (timeHorizon === 'Daily') {
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      if (new Date(i.date) < sevenDaysAgo) return false;
+    } else if (timeHorizon === 'Weekly') {
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      if (new Date(i.date) < thirtyDaysAgo) return false;
+    } else if (timeHorizon === 'Monthly') {
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      if (new Date(i.date) >= thirtyDaysAgo) return false;
+    }
+
     if (search.trim()) {
       const q = search.toLowerCase();
       const matchHead = i.headline.toLowerCase().includes(q);
@@ -111,6 +128,24 @@ export const CurrentAffairs: React.FC = () => {
           />
         </div>
 
+        {/* Time Horizon Selection */}
+        <div className="flex items-center space-x-2 border-b border-slate-100 pb-2.5 overflow-x-auto">
+          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Digest Scope:</span>
+          {(['All', 'Daily', 'Weekly', 'Monthly'] as const).map((th) => (
+            <button
+              key={th}
+              onClick={() => setTimeHorizon(th)}
+              className={`px-3 py-1 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
+                timeHorizon === th
+                  ? 'bg-indigo-600 text-white shadow-xs'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
+            >
+              {th === 'All' ? 'All Coverage' : th === 'Daily' ? 'Daily (Last 7d)' : th === 'Weekly' ? 'Weekly (Last 30d)' : 'Monthly Archive'}
+            </button>
+          ))}
+        </div>
+
         <div className="flex items-center space-x-2 overflow-x-auto pb-1">
           <button
             onClick={() => setSelectedCat('All')}
@@ -144,7 +179,7 @@ export const CurrentAffairs: React.FC = () => {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
             <div className="sm:col-span-2">
               <label className="block font-bold text-slate-700 mb-1">Headline</label>
               <input
@@ -167,6 +202,16 @@ export const CurrentAffairs: React.FC = () => {
                   <option key={c} value={c}>{c}</option>
                 ))}
               </select>
+            </div>
+            <div>
+              <label className="block font-bold text-slate-700 mb-1">Date</label>
+              <input
+                type="date"
+                required
+                value={customDate}
+                onChange={(e) => setCustomDate(e.target.value)}
+                className="w-full p-2.5 rounded-xl border border-slate-200 bg-white"
+              />
             </div>
           </div>
 

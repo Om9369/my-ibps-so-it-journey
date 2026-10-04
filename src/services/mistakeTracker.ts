@@ -35,6 +35,24 @@ export async function createMistakeFromQuestion(params: {
   };
 
   await putItem('mistakes', entry);
+
+  // Link into Syllabus Intelligence Engine
+  try {
+    const { getFlatConcepts, recordConceptMistake } = await import('./syllabusEngine');
+    const concepts = Array.from(getFlatConcepts().values());
+    const matched = concepts.find(
+      (c) =>
+        c.title.toLowerCase() === question.topic.toLowerCase() ||
+        question.topic.toLowerCase().includes(c.title.toLowerCase()) ||
+        c.title.toLowerCase().includes(question.topic.toLowerCase())
+    );
+    if (matched) {
+      await recordConceptMistake(matched.id, reason as any);
+    }
+  } catch (err) {
+    console.warn('Could not update syllabus mastery for mistake:', err);
+  }
+
   return entry;
 }
 

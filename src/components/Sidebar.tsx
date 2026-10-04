@@ -21,6 +21,7 @@ import {
   Menu,
   X,
   Sparkles,
+  Compass,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -30,6 +31,7 @@ interface SidebarProps {
 const navItems = [
   { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
   { name: 'Daily Checklist', path: '/daily-checklist', icon: CheckSquare },
+  { name: 'Adaptive Syllabus', path: '/syllabus', icon: Compass, highlight: true },
   { name: 'Study Log', path: '/study-log', icon: Clock },
   { name: 'IT Preparation', path: '/it-preparation', icon: Cpu },
   { name: 'Practice', path: '/practice', icon: PlayCircle },

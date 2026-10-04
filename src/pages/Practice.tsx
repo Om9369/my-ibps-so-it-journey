@@ -155,6 +155,30 @@ export const Practice: React.FC = () => {
     activeTest.timeUsedSeconds = elapsedSeconds;
     const evaluated = calculateMockResults(activeTest);
     await mockProvider.saveMockAttempt(evaluated);
+
+    // Update real-time concept mastery in Syllabus Intelligence Engine
+    try {
+      const { getFlatConcepts, recordConceptAttempt } = await import('../services/syllabusEngine');
+      const concepts = Array.from(getFlatConcepts().values());
+      for (const q of evaluated.questions) {
+        const attempt = evaluated.attempts[q.id];
+        if (attempt && attempt.selectedOptionIndex !== undefined) {
+          const isCorrect = attempt.isCorrect || false;
+          const matched = concepts.find(
+            (c) =>
+              c.title.toLowerCase() === q.topic.toLowerCase() ||
+              q.topic.toLowerCase().includes(c.title.toLowerCase()) ||
+              c.title.toLowerCase().includes(q.topic.toLowerCase())
+          );
+          if (matched) {
+            await recordConceptAttempt(matched.id, isCorrect, q.difficulty);
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('Error recording syllabus attempts:', e);
+    }
+
     setActiveTest(evaluated);
     setSessionState('Completed');
   };

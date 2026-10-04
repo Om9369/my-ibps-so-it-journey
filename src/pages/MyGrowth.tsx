@@ -12,7 +12,10 @@ import {
   BarChart2,
   PieChart as PieIcon,
   ShieldCheck,
+  Compass,
 } from 'lucide-react';
+import { getOverallSyllabusMetrics } from '../services/syllabusEngine';
+import { SubjectAnalyticsSummary } from '../types/syllabus';
 import {
   LineChart,
   Line,
@@ -28,14 +31,23 @@ import {
 
 export const MyGrowth: React.FC = () => {
   const [data, setData] = useState<GrowthAnalyticsData | null>(null);
+  const [subjectSummaries, setSubjectSummaries] = useState<SubjectAnalyticsSummary[]>([]);
+  const [syllabusMasteryPct, setSyllabusMasteryPct] = useState<number>(0);
 
   useEffect(() => {
     loadAnalytics();
   }, []);
 
   const loadAnalytics = async () => {
-    const analytics = await computeGrowthAnalytics();
+    const [analytics, sylMetrics] = await Promise.all([
+      computeGrowthAnalytics(),
+      getOverallSyllabusMetrics().catch(() => null),
+    ]);
     setData(analytics);
+    if (sylMetrics) {
+      setSubjectSummaries(sylMetrics.subjectSummaries);
+      setSyllabusMasteryPct(sylMetrics.overallMasteryPct);
+    }
   };
 
   if (!data) {
@@ -230,6 +242,70 @@ export const MyGrowth: React.FC = () => {
               : 'Consistent accuracy on Easy questions. Focus on mastering edge-case algorithms in Medium and Hard categories.'}
           </div>
         </div>
+      </div>
+
+      {/* 15-SUBJECT SYLLABUS MASTERY OVERVIEW */}
+      <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex items-center space-x-2">
+            <Compass className="w-5 h-5 text-indigo-600" />
+            <h3 className="font-bold text-slate-900 text-sm">
+              Adaptive Syllabus Engine: 15-Subject Mastery Overview
+            </h3>
+          </div>
+          <span className="text-xs font-bold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2.5 py-1 rounded-full">
+            Overall Syllabus Mastery: {syllabusMasteryPct}%
+          </span>
+        </div>
+
+        <p className="text-xs text-slate-500">
+          Composite mastery score (0-100) combining syllabus completion, mock test accuracy, recent streak, prerequisite clearance, and cognitive mistake penalties.
+        </p>
+
+        {subjectSummaries.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-1">
+            {subjectSummaries.map((sub) => (
+              <div key={sub.subjectId} className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-xs text-slate-800 truncate max-w-[170px]">
+                    {sub.name}
+                  </span>
+                  <span className={`text-xs font-black px-2 py-0.5 rounded-full ${
+                    sub.avgMastery >= 85
+                      ? 'bg-emerald-100 text-emerald-800'
+                      : sub.avgMastery >= 65
+                      ? 'bg-blue-100 text-blue-800'
+                      : sub.avgMastery >= 40
+                      ? 'bg-amber-100 text-amber-800'
+                      : 'bg-slate-200 text-slate-700'
+                  }`}>
+                    {sub.avgMastery}%
+                  </span>
+                </div>
+
+                <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all duration-500 ${
+                      sub.avgMastery >= 85
+                        ? 'bg-emerald-600'
+                        : sub.avgMastery >= 65
+                        ? 'bg-blue-600'
+                        : sub.avgMastery >= 40
+                        ? 'bg-amber-500'
+                        : 'bg-slate-400'
+                    }`}
+                    style={{ width: `${Math.max(4, sub.avgMastery)}%` }}
+                  ></div>
+                </div>
+
+                <div className="flex justify-between items-center text-[11px] text-slate-500 pt-0.5">
+                  <span>{sub.completedConcepts}/{sub.totalConcepts} concepts</span>
+                  <span>{sub.accuracy}% acc ({sub.totalQuestionsAttempted} Qs)</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* MISTAKE PATTERNS & ROOT CAUSES (Requirement #9 & #17) */}

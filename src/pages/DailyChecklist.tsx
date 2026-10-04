@@ -5,6 +5,7 @@ import { getAllItems, putItem, deleteItem } from '../services/db';
 import { DailyChecklistItem, Subject } from '../types';
 import { CheckSquare, Plus, Trash2, Calendar, Sparkles, Clock, CheckCircle, BookOpen } from 'lucide-react';
 import { getCurriculumTasksForDate } from '../data/curriculum';
+import { generateAdaptiveDailyChecklist } from '../services/syllabusEngine';
 
 const CATEGORIES = ['IT', 'Reasoning', 'English', 'Quant', 'Banking & CA', 'Revision', 'Custom'] as const;
 
@@ -76,40 +77,27 @@ export const DailyChecklist: React.FC = () => {
     setIsAddingNew(false);
   };
 
-  // Generate Next Day Checklist from Progressive Syllabus + Carried Unfinished Tasks
+  // Generate Next Day Checklist from Adaptive Syllabus + Carried Unfinished Tasks
   const handleAutoGenerateNextDay = async () => {
     const curr = new Date(selectedDate);
     curr.setDate(curr.getDate() + 1);
     const nextDateStr = curr.toISOString().split('T')[0];
 
     const currentUnfinished = items.filter((i) => !i.completed);
-    const progressiveTasks = getCurriculumTasksForDate(nextDateStr);
-    const carried: DailyChecklistItem[] = [];
+    const adaptiveTasks = await generateAdaptiveDailyChecklist(nextDateStr, currentUnfinished);
 
-    // Carry forward unfinished tasks
-    for (const u of currentUnfinished) {
-      carried.push({
-        ...u,
-        id: `chk-carry-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-        date: nextDateStr,
-        completed: false,
-        notes: `[Carried from ${selectedDate}] ${u.notes || ''}`.trim(),
-      });
-    }
-
-    const nextBatch = [...carried, ...progressiveTasks];
-    for (const g of nextBatch) {
+    for (const g of adaptiveTasks) {
       await putItem('checklist', g);
     }
 
     setSelectedDate(nextDateStr);
-    alert(`Generated progressive checklist for ${nextDateStr} (3.0 Hours allocated) with ${carried.length} carried task(s)!`);
+    alert(`Generated adaptive 3.0-hour checklist for ${nextDateStr} with prerequisite verification and ${currentUnfinished.length} carried task(s)!`);
   };
 
-  // Populate progressive curriculum for currently empty day
+  // Populate adaptive curriculum for currently empty day
   const handleLoadCurriculumForSelectedDate = async () => {
-    const progressiveTasks = getCurriculumTasksForDate(selectedDate);
-    for (const t of progressiveTasks) {
+    const adaptiveTasks = await generateAdaptiveDailyChecklist(selectedDate, []);
+    for (const t of adaptiveTasks) {
       await putItem('checklist', t);
     }
     await loadChecklist();
@@ -337,6 +325,12 @@ export const DailyChecklist: React.FC = () => {
                             <span>Est: {task.estimatedMinutes}m</span>
                           </span>
                         </div>
+                        {task.notes && (
+                          <div className="text-[11px] text-indigo-700 bg-indigo-50/70 px-2.5 py-1 rounded-lg border border-indigo-100/80 max-w-fit mt-1 flex items-start space-x-1.5">
+                            <Sparkles className="w-3 h-3 text-indigo-500 shrink-0 mt-0.5" />
+                            <span>{task.notes}</span>
+                          </div>
+                        )}
                       </div>
                     </div>
 
