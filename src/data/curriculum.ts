@@ -880,19 +880,73 @@ export const PROGRESSIVE_CURRICULUM: CurriculumDayTemplate[] = [
   },
 ];
 
+export const DAY_ZERO_ORIENTATION: CurriculumDayTemplate = {
+  dayNumber: 0,
+  title: 'Kickoff & Orientation: Setup Buffer Before Week 1',
+  tasks: [
+    {
+      category: 'IT',
+      subject: 'IT',
+      title: 'Syllabus Orientation: Review 15-Subject Adaptive Roadmap & Exam Blueprint',
+      topic: 'Syllabus Overview',
+      estimatedMinutes: 30,
+      notes: 'Inspect the L0 to L3 prerequisite map across Database, OS, Networks, SE, and Data Structures.',
+    },
+    {
+      category: 'Banking & CA',
+      subject: 'Banking & CA',
+      title: 'Exam Pattern Inspection: CRP-SPL-XVI Blueprint & Sectional Cutoff Strategy',
+      topic: 'Exam Pattern Strategy',
+      estimatedMinutes: 20,
+      notes: 'Preliminary pattern: 125 questions / 125 marks (50 IT Prelims + 75 Reasoning/Eng/Quant).',
+    },
+    {
+      category: 'Revision',
+      subject: 'Quant',
+      title: 'Environment & Tooling Setup: Setup formula sheets, scratchpad, and timer habits',
+      topic: 'Study Setup',
+      estimatedMinutes: 20,
+      notes: 'Prepare a dedicated notebook for Mistake Notebook offline logs and speed math tables.',
+    },
+    {
+      category: 'Revision',
+      subject: 'IT',
+      title: 'Mental Preparation & Schedule Alignment for 3-Hour Daily Routine',
+      topic: 'Habit Formation',
+      estimatedMinutes: 20,
+      notes: 'Commit to the 180-minute daily study block beginning tomorrow morning (Monday, Oct 5).',
+    },
+  ],
+};
+
 /**
  * Calculates which progressive curriculum day applies for a given date.
- * Baseline start date: 2026-10-03 (Day 1).
+ * Baseline start date: 2026-10-05 (Monday = Week 1 Day 1).
+ * Dates prior to 2026-10-05 receive the Day 0 Kickoff & Orientation template.
  */
 export function getCurriculumTasksForDate(targetDateStr: string): DailyChecklistItem[] {
-  const start = new Date('2026-10-03T00:00:00');
+  const start = new Date('2026-10-05T00:00:00');
   const target = new Date(targetDateStr + 'T00:00:00');
   const diffTime = target.getTime() - start.getTime();
-  let dayIndex = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  const dayIndex = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
-  if (dayIndex < 0) dayIndex = 0;
+  if (dayIndex < 0) {
+    // Before Week 1 Day 1 (e.g. today Sunday Oct 4, 2026) -> Orientation Day 0
+    return DAY_ZERO_ORIENTATION.tasks.map((t, idx) => ({
+      id: `chk-${targetDateStr}-d0-${idx + 1}-${Math.random().toString(36).substring(2, 6)}`,
+      category: t.category,
+      title: t.title,
+      subject: t.subject,
+      topic: t.topic,
+      estimatedMinutes: t.estimatedMinutes,
+      actualMinutes: 0,
+      completed: false,
+      notes: t.notes || '',
+      date: targetDateStr,
+    }));
+  }
 
-  // Cycle through the progressive curriculum roadmap
+  // Cycle through the progressive curriculum roadmap starting from Day 1 on Monday Oct 5
   const templateIndex = dayIndex % PROGRESSIVE_CURRICULUM.length;
   const template = PROGRESSIVE_CURRICULUM[templateIndex];
 
@@ -909,3 +963,4 @@ export function getCurriculumTasksForDate(targetDateStr: string): DailyChecklist
     date: targetDateStr,
   }));
 }
+

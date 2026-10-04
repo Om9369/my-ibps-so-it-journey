@@ -127,12 +127,42 @@ export const SundayReview: React.FC = () => {
 
   const allComplete = STEPS.every((s) => s.isComplete);
 
+  const today = new Date();
+  const isSunday = today.getDay() === 0;
+  const isKickoffSunday = isSunday && today.toISOString().split('T')[0] <= '2026-10-04';
+
   return (
     <div className="space-y-6 pb-12">
       <Header
         title="Sunday Full Mock & Weekly Review Workflow"
         subtitle="The cornerstone ritual: Timed Mock &rarr; Honest Error Audit &rarr; Mistake Logging &rarr; Strategic Planning."
       />
+
+      {/* Kickoff Phase Notice */}
+      {isKickoffSunday && (
+        <div className="bg-indigo-50 border-2 border-indigo-200 text-indigo-950 rounded-2xl p-5 flex items-start space-x-3.5 shadow-sm">
+          <Sparkles className="w-6 h-6 text-indigo-600 shrink-0 mt-0.5" />
+          <div className="space-y-1.5 text-xs">
+            <div className="font-extrabold text-sm text-indigo-900 flex items-center space-x-2">
+              <span>Kickoff Phase Buffer: No Mock Test Required Today</span>
+              <span className="px-2 py-0.5 rounded-full bg-indigo-200/60 text-indigo-800 text-[10px] font-bold">Day 0 Buffer</span>
+            </div>
+            <p className="text-slate-600 leading-relaxed">
+              You are kicking off fresh! Week 1 syllabus officially begins <strong>tomorrow (Monday, Oct 5, 2026)</strong>.
+              Today is your rest and orientation day—you do not need to take a full mock test before studying the foundational topics.
+              The regular 8-step Sunday Full Mock & Review workflow will activate for your study routine next Sunday (Oct 11) after completing Week 1.
+            </p>
+            <div className="pt-1">
+              <button
+                onClick={() => navigate('/daily-checklist')}
+                className="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg text-xs transition-colors"
+              >
+                Go to Daily Checklist &rarr;
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Hero Banner */}
       <div className="bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 text-white p-6 rounded-2xl shadow-md space-y-3">

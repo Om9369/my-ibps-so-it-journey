@@ -94,10 +94,10 @@ export const DailyChecklist: React.FC = () => {
     alert(`Generated adaptive 3.0-hour checklist for ${nextDateStr} with prerequisite verification and ${currentUnfinished.length} carried task(s)!`);
   };
 
-  // Populate adaptive curriculum for currently empty day
+  // Populate curriculum for currently empty day
   const handleLoadCurriculumForSelectedDate = async () => {
-    const adaptiveTasks = await generateAdaptiveDailyChecklist(selectedDate, []);
-    for (const t of adaptiveTasks) {
+    const tasks = getCurriculumTasksForDate(selectedDate);
+    for (const t of tasks) {
       await putItem('checklist', t);
     }
     await loadChecklist();
@@ -114,6 +114,34 @@ export const DailyChecklist: React.FC = () => {
         title="Daily Checklist"
         subtitle="Maintain daily study discipline across Professional Knowledge, Reasoning, English, Quant, and Current Affairs."
       />
+
+      {/* Kickoff Sunday Buffer Banner */}
+      {selectedDate <= '2026-10-04' && (
+        <div className="bg-gradient-to-r from-indigo-50 to-blue-50 border border-indigo-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
+          <div className="flex items-start sm:items-center space-x-3">
+            <div className="p-2 bg-indigo-100 text-indigo-700 rounded-xl shrink-0 mt-0.5 sm:mt-0">
+              <Sparkles className="w-5 h-5 text-indigo-600" />
+            </div>
+            <div>
+              <div className="flex items-center space-x-2">
+                <span className="font-bold text-slate-900 text-sm">Orientation & Kickoff Buffer (Day 0)</span>
+                <span className="px-2 py-0.5 bg-indigo-200/50 text-indigo-800 font-bold text-[10px] rounded-full uppercase">
+                  Week 1 Starts Tomorrow
+                </span>
+              </div>
+              <p className="text-xs text-slate-600 mt-0.5">
+                Today's Sunday is kept free for setup and rest. Your official 3-hour foundational daily syllabus begins tomorrow (Monday, Oct 5, 2026) with Computer Architecture, Speed Math & Grammar!
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => setSelectedDate('2026-10-05')}
+            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow transition-colors whitespace-nowrap self-start sm:self-auto"
+          >
+            Go to Week 1 Day 1 (Oct 5) &rarr;
+          </button>
+        </div>
+      )}
 
       {/* Date Bar & Generation Actions */}
       <div className="bg-white p-4 md:p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -255,16 +283,36 @@ export const DailyChecklist: React.FC = () => {
           <div>
             <h3 className="font-bold text-slate-900 text-base">No tasks logged for {selectedDate}</h3>
             <p className="text-xs text-slate-500 max-w-md mx-auto mt-1">
-              Load today's structured 3.0-hour syllabus moving from foundational concepts to advanced bank exam topics.
+              {selectedDate <= '2026-10-04'
+                ? "Today is your Kickoff Sunday buffer. You can relax, complete light setup, or switch directly to Week 1 Day 1 (Monday, Oct 5)."
+                : "Load today's structured 3.0-hour syllabus moving from foundational concepts to advanced bank exam topics."}
             </p>
           </div>
-          <button
-            onClick={handleLoadCurriculumForSelectedDate}
-            className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md transition-all inline-flex items-center space-x-2"
-          >
-            <Sparkles className="w-4 h-4 text-amber-300" />
-            <span>Load Progressive Syllabus for this Date (3.0 Hours)</span>
-          </button>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            {selectedDate <= '2026-10-04' && (
+              <button
+                onClick={() => setSelectedDate('2026-10-05')}
+                className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-md transition-all inline-flex items-center space-x-2"
+              >
+                <span>Jump to Week 1 Day 1 (Oct 5) &rarr;</span>
+              </button>
+            )}
+            <button
+              onClick={handleLoadCurriculumForSelectedDate}
+              className={`px-5 py-2.5 font-bold text-xs rounded-xl shadow-md transition-all inline-flex items-center space-x-2 ${
+                selectedDate <= '2026-10-04'
+                  ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200'
+                  : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+              }`}
+            >
+              <Sparkles className="w-4 h-4 text-amber-300" />
+              <span>
+                {selectedDate <= '2026-10-04'
+                  ? 'Load Day 0 Orientation Tasks (Optional)'
+                  : 'Load Progressive Syllabus for this Date (3.0 Hours)'}
+              </span>
+            </button>
+          </div>
         </div>
       )}
 

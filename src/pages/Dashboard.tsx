@@ -100,7 +100,9 @@ export const Dashboard: React.FC = () => {
   const latestMock = mocks.length > 0 ? mocks[mocks.length - 1] : null;
   const itSectionScore = latestMock?.sectionSummaries?.find((s) => s.subject === 'IT');
 
-  const isSunday = new Date().getDay() === 0;
+  const today = new Date();
+  const isSunday = today.getDay() === 0;
+  const isKickoffSunday = isSunday && today.toISOString().split('T')[0] <= '2026-10-04';
 
   return (
     <div className="space-y-6 pb-12">
@@ -136,8 +138,38 @@ export const Dashboard: React.FC = () => {
         </div>
       )}
 
-      {/* Sunday Primary Workflow Banner */}
-      {isSunday && (
+      {/* Sunday Primary Workflow Banner or Kickoff Buffer Banner */}
+      {isKickoffSunday ? (
+        <div className="bg-gradient-to-r from-indigo-800 via-indigo-900 to-slate-900 text-white rounded-2xl p-5 shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-indigo-700/50">
+          <div className="space-y-1">
+            <div className="flex items-center space-x-2">
+              <Sparkles className="w-5 h-5 text-amber-300" />
+              <span className="font-black text-lg">Kickoff Buffer (Day 0) • Week 1 Starts Tomorrow</span>
+              <span className="px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 text-[10px] font-bold uppercase tracking-wider">
+                Rest & Orientation
+              </span>
+            </div>
+            <p className="text-xs text-indigo-100 max-w-xl">
+              Today's Sunday is your orientation buffer—<strong>no mock test required today</strong>! 
+              Your structured 3-hour daily foundational schedule begins <strong>tomorrow (Monday, Oct 5) as Week 1, Day 1</strong>.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <NavLink
+              to="/syllabus"
+              className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow transition-colors whitespace-nowrap"
+            >
+              Explore Syllabus &rarr;
+            </NavLink>
+            <NavLink
+              to="/daily-checklist"
+              className="px-4 py-2.5 bg-white text-indigo-900 hover:bg-indigo-50 font-bold text-xs rounded-xl shadow transition-colors whitespace-nowrap"
+            >
+              Preview Week 1 Tasks &rarr;
+            </NavLink>
+          </div>
+        </div>
+      ) : isSunday ? (
         <div className="bg-gradient-to-r from-emerald-600 to-teal-700 text-white rounded-2xl p-5 shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center space-x-2">
@@ -155,7 +187,7 @@ export const Dashboard: React.FC = () => {
             Open Sunday Workflow &rarr;
           </NavLink>
         </div>
-      )}
+      ) : null}
 
       {/* Adaptive Syllabus Engine & August 2027 Roadmap Widget */}
       {syllabusMetrics && (

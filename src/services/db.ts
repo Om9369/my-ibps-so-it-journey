@@ -193,17 +193,18 @@ export async function initAppDatabase(): Promise<void> {
     }
   }
 
-  // Automatic one-time cleanup to start fresh from today 3/10/26
-  if (localStorage.getItem('prep_fresh_start_20261003') !== 'true') {
-    await cleanPracticeDataStartingToday();
+  // Automatic one-time cleanup to start fresh for Week 1 starting Monday Oct 5, 2026
+  if (localStorage.getItem('prep_fresh_start_20261005') !== 'true') {
+    await cleanPracticeDataStartingMonday();
   }
 }
 
 /**
  * Resets all daily practice, study sessions, daily analysis, and past mistakes,
  * while preserving the Question Bank, Quizzes, Exam Configurations, and Vocabulary.
+ * Seeds Week 1 Day 1 checklist for Monday, 2026-10-05.
  */
-export async function cleanPracticeDataStartingToday(): Promise<void> {
+export async function cleanPracticeDataStartingMonday(): Promise<void> {
   try {
     const db = await getDB();
     // Clear dynamic practice stores
@@ -213,7 +214,7 @@ export async function cleanPracticeDataStartingToday(): Promise<void> {
     await db.clear('mockTests');
     await db.clear('revisions');
 
-    // Fresh checklist for today (2026-10-03)
+    // Fresh checklist for Monday (2026-10-05) Week 1 Day 1
     await db.clear('checklist');
     const txChk = db.transaction('checklist', 'readwrite');
     for (const item of initialChecklist) {
@@ -253,8 +254,11 @@ export async function cleanPracticeDataStartingToday(): Promise<void> {
   setLS('prep_goals', initialGoals);
   setLS('prep_it_progress', initialITTopics);
 
-  localStorage.setItem('prep_fresh_start_20261003', 'true');
+  localStorage.setItem('prep_fresh_start_20261005', 'true');
 }
+
+// Backwards compatibility alias
+export const cleanPracticeDataStartingToday = cleanPracticeDataStartingMonday;
 
 // Generic Storage Operations
 export async function getAllItems<T>(storeName: string): Promise<T[]> {

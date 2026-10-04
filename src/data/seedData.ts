@@ -210,7 +210,7 @@ export const initialChecklist: DailyChecklistItem[] = [
     actualMinutes: 0,
     completed: false,
     notes: 'Focus on registers, cache levels (L1/L2/L3), and basic CPU instruction cycles.',
-    date: '2026-10-03',
+    date: '2026-10-05',
   },
   {
     id: 'chk-2',
@@ -222,7 +222,7 @@ export const initialChecklist: DailyChecklistItem[] = [
     actualMinutes: 0,
     completed: false,
     notes: 'Solve on timer; focus on binary, octal, hexadecimal conversions.',
-    date: '2026-10-03',
+    date: '2026-10-05',
   },
   {
     id: 'chk-3',
@@ -234,7 +234,7 @@ export const initialChecklist: DailyChecklistItem[] = [
     actualMinutes: 0,
     completed: false,
     notes: 'Memorize forward & backward letter positions (EJOTY rule).',
-    date: '2026-10-03',
+    date: '2026-10-05',
   },
   {
     id: 'chk-4',
@@ -246,7 +246,7 @@ export const initialChecklist: DailyChecklistItem[] = [
     actualMinutes: 0,
     completed: false,
     notes: 'Essential foundation for simplification, approximation, and DI.',
-    date: '2026-10-03',
+    date: '2026-10-05',
   },
   {
     id: 'chk-5',
@@ -258,7 +258,7 @@ export const initialChecklist: DailyChecklistItem[] = [
     actualMinutes: 0,
     completed: false,
     notes: 'Note down 5 unfamiliar words with synonyms and antonyms.',
-    date: '2026-10-03',
+    date: '2026-10-05',
   },
   {
     id: 'chk-6',
@@ -270,7 +270,7 @@ export const initialChecklist: DailyChecklistItem[] = [
     actualMinutes: 0,
     completed: false,
     notes: 'Scheduled commercial banks, nationalization history, and RBI functions.',
-    date: '2026-10-03',
+    date: '2026-10-05',
   },
   {
     id: 'chk-7',
@@ -282,7 +282,7 @@ export const initialChecklist: DailyChecklistItem[] = [
     actualMinutes: 0,
     completed: false,
     notes: 'Consolidate today’s formulas and self-correction rules.',
-    date: '2026-10-03',
+    date: '2026-10-05',
   },
 ];
 

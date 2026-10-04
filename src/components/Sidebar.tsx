@@ -52,7 +52,9 @@ const navItems = [
 
 export const Sidebar: React.FC<SidebarProps> = ({ hasActiveMock }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const isSunday = new Date().getDay() === 0;
+  const today = new Date();
+  const isSunday = today.getDay() === 0;
+  const isKickoffSunday = isSunday && today.toISOString().split('T')[0] <= '2026-10-04';
 
   return (
     <>
@@ -127,13 +129,18 @@ export const Sidebar: React.FC<SidebarProps> = ({ hasActiveMock }) => {
           </div>
         )}
 
-        {/* Sunday Focus Highlight Badge */}
-        {isSunday && (
+        {/* Sunday Focus / Kickoff Highlight Badge */}
+        {isKickoffSunday ? (
+          <div className="mx-3 mt-3 p-2 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs flex items-center space-x-2">
+            <Sparkles className="w-4 h-4 text-indigo-400 shrink-0" />
+            <span className="font-semibold">Prep Kickoff • Week 1 Starts Tomorrow!</span>
+          </div>
+        ) : isSunday ? (
           <div className="mx-3 mt-3 p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs flex items-center space-x-2">
             <Sparkles className="w-4 h-4 text-emerald-400 shrink-0" />
             <span className="font-semibold">Sunday Mock Day! Complete your Full Mock today.</span>
           </div>
-        )}
+        ) : null}
 
         {/* Navigation Links list */}
         <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1 custom-scrollbar">
@@ -161,7 +168,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ hasActiveMock }) => {
                     Mocks
                   </span>
                 )}
-                {item.isSundaySpecial && isSunday && (
+                {item.isSundaySpecial && isSunday && !isKickoffSunday && (
                   <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
                 )}
               </NavLink>
