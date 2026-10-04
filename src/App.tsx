@@ -8,6 +8,7 @@ import StudyLog from './pages/StudyLog';
 import DailyAnalysis from './pages/DailyAnalysis';
 import ITPreparation from './pages/ITPreparation';
 import Syllabus from './pages/Syllabus';
+import FullSyllabus from './pages/FullSyllabus';
 import Practice from './pages/Practice';
 import MainsDescriptive from './pages/MainsDescriptive';
 import MockTests from './pages/MockTests';
@@ -47,6 +48,7 @@ const App: React.FC = () => {
             <Route path="/daily-analysis" element={<DailyAnalysis />} />
             <Route path="/it-preparation" element={<ITPreparation />} />
             <Route path="/syllabus" element={<Syllabus />} />
+            <Route path="/full-syllabus" element={<FullSyllabus />} />
             <Route path="/practice" element={<Practice />} />
             <Route path="/mains-descriptive" element={<MainsDescriptive />} />
             <Route path="/mock-tests" element={<MockTests />} />

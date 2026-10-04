@@ -156,10 +156,10 @@ export const Dashboard: React.FC = () => {
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <NavLink
-              to="/syllabus"
+              to="/full-syllabus"
               className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow transition-colors whitespace-nowrap"
             >
-              Explore Syllabus &rarr;
+              Full Syllabus &rarr;
             </NavLink>
             <NavLink
               to="/daily-checklist"
@@ -221,13 +221,21 @@ export const Dashboard: React.FC = () => {
               <div className="text-xl font-black text-emerald-400">{syllabusMetrics.overallCompletionPct}%</div>
             </div>
             <div className="w-[1px] h-8 bg-slate-800"></div>
-            <NavLink
-              to="/syllabus"
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow transition-colors whitespace-nowrap flex items-center space-x-1.5"
-            >
-              <span>Explore Engine</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </NavLink>
+            <div className="flex flex-col sm:flex-row items-center gap-2">
+              <NavLink
+                to="/full-syllabus"
+                className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-xl border border-slate-700 transition-colors whitespace-nowrap"
+              >
+                Full Syllabus
+              </NavLink>
+              <NavLink
+                to="/syllabus"
+                className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow transition-colors whitespace-nowrap flex items-center space-x-1"
+              >
+                <span>Adaptive Engine</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </NavLink>
+            </div>
           </div>
         </div>
       )}

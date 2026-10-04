@@ -280,9 +280,18 @@ export const Syllabus: React.FC = () => {
             <strong>Important Exam-Data Distinction:</strong> IBPS specifies the official examination structure (sectional questions, marks, and durations) and the broad Professional Knowledge domain. The comprehensive 15-subject hierarchy below represents the <strong>RECOMMENDED PREPARATION SYLLABUS</strong> curated to ensure thorough readiness for all direct, conceptual, and banking-IT scenarios.
           </p>
         </div>
-        <div className="text-right shrink-0">
-          <span className="text-[11px] font-semibold text-indigo-400 block">Exam Target</span>
-          <span className="text-sm font-black text-white">Aug 2027 Cycle</span>
+        <div className="flex flex-col sm:flex-row items-end sm:items-center gap-3 shrink-0">
+          <button
+            onClick={() => navigate('/full-syllabus')}
+            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow transition-colors flex items-center space-x-1.5 whitespace-nowrap"
+          >
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>Full Syllabus Directory &rarr;</span>
+          </button>
+          <div className="text-right hidden sm:block">
+            <span className="text-[11px] font-semibold text-indigo-400 block">Exam Target</span>
+            <span className="text-sm font-black text-white">Aug 2027 Cycle</span>
+          </div>
         </div>
       </div>
 
